@@ -14,6 +14,29 @@ _____________________________________________________________________________
 find /etc/apt -type f -regex ".*\(list\|sources\).*" -exec bash -c 'echo -e "\n\t$1\n" ; [ "${1##*.}" = "list" -o "${1##*.}" = "sources" ] && cat -n "$1"' _ '{}' \;
 ```
 _____________________________________________________________________________
+# CHROOT
+
+```bash
+sudo mkdir -p /mnt
+sudo mkdir -p /mnt/boot/efi
+sudo mount /dev/nvme0n1p8 /mnt
+sudo mount /dev/nvme0n1p1 /mnt/boot/efi
+sudo mount --bind /dev /mnt/dev
+sudo mount --bind /dev/pts /mnt/dev/pts
+sudo mount --bind /proc /mnt/proc
+sudo mount --bind /sys /mnt/sys
+sudo mount --bind /run /mnt/run
+sudo mount --bind /sys/firmware/efi/efivars /mnt/sys/firmware/efi/efivars
+sudo chroot /mnt
+os-prober
+update-grub
+grub-install --efi-directory=/boot/efi --target=x86_64-efi --bootloader-id=ubuntu
+exit
+sudo umount -R /mnt
+sudo reboot
+```
+
+_____________________________________________________________________________
 # Test GRUB
 
 ## Installer tous les paquets nécessaires
