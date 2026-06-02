@@ -63,3 +63,7 @@ _____________________________________________________________________________
 ```bash
 echo;dpkg-query -W -f='${Status} ${Package} ${Version} ${Architecture}\n' | grep -v '^rc' | grep -E ' linux-(c|g|h|i|lo|m|si|t)' | sort -k3V | column -t;echo -e "\nNoyau courant : $(uname -mr)"
 ```
+### Version Abrégé
+```bash
+echo; dpkg-query -W -f='${db:Status-Abbrev} ${Package} ${Version} ${Architecture}\n' | grep -v '^rc' | grep -E ' linux-(c|g|h|i|lo|m|si|t)' | sort -k3V | column -t; echo -e "\nNoyau courant : $(uname -mr)
+```
