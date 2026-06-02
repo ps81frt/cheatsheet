@@ -37,6 +37,26 @@ sudo reboot
 ```
 
 _____________________________________________________________________________
+# GRUB-LIST
+
+```bash
+sudo awk '/submenu /{s=1;si=0;depth=1;match($0,/["\x27][^"'\'']+["\x27]/);printf "%d : %s\n",ti++,substr($0,RSTART+1,RLENGTH-2);next} s{for(i=1;i<=length($0);i++){c=substr($0,i,1);if(c=="{")depth++;if(c=="}")depth--;if(depth==0){s=0;break}}} /menuentry /{match($0,/["\x27][^"'\'']+["\x27]/);name=substr($0,RSTART+1,RLENGTH-2);if(name!=""){if(s){printf "\t> %d : %s\n",si++,name}else{printf "%d : %s\n",ti++,name}}}' /boot/grub/grub.cfg
+```
+### Ou creer app
+```bash
+
+sudo tee /usr/local/bin/grub-list << 'EOF'
+#!/bin/bash
+sudo awk '/submenu /{s=1;si=0;depth=1;match($0,/["'"'"'][^"'"'"']+["'"'"']/);printf "%d : %s\n",ti++,substr($0,RSTART+1,RLENGTH-2);next} s{for(i=1;i<=length($0);i++){c=substr($0,i,1);if(c=="{")depth++;if(c=="}")depth--;if(depth==0){s=0;break}}} /menuentry /{match($0,/["'"'"'][^"'"'"']+["'"'"']/);name=substr($0,RSTART+1,RLENGTH-2);if(name!=""){if(s){printf "\t> %d : %s\n",si++,name}else{printf "%d : %s\n",ti++,name}}}' /boot/grub/grub.cfg
+EOF
+sudo chmod +x /usr/local/bin/grub-list
+```
+### Lancer
+```bash
+grub-list
+```
+
+_____________________________________________________________________________
 # Test GRUB
 
 ## Installer tous les paquets nécessaires
