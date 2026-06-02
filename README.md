@@ -57,3 +57,9 @@ sudo grub-mkrescue -o ~/test.iso /boot/grub --compress=xz
 ```bash
 qemu-system-x86_64 -enable-kvm -m 2048 -cdrom ~/test.iso -boot d -bios /usr/share/OVMF/OVMF_CODE.fd
 ```
+
+_____________________________________________________________________________
+# KERNEL INSTALLER
+```bash
+echo;dpkg-query -W -f='${Status} ${Package} ${Version} ${Architecture}\n' | grep -v '^rc' | grep -E ' linux-(c|g|h|i|lo|m|si|t)' | sort -k3V | column -t;echo -e "\nNoyau courant : $(uname -mr)"
+```
