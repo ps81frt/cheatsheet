@@ -1,3 +1,9 @@
+#UEFI ou Legacy(Bios)
+```bash
+[ -d /sys/firmware/efi ] && echo "Mode de démarrage détecté : UEFI." || echo "Mode de démarrage détecté : BIOS hérité (Legacy)."
+```
+_____________________________________________________________________________
+
 # bootinfo
 ## FULL
 ```bash
