@@ -17,7 +17,7 @@ _____________________________________________________________________________
 # Sourcelist
 
 ```bash
-find /etc/apt -type f -regex ".*\(list\|sources\).*" -exec bash -c 'echo -e "\n\t$1\n" ; [ "${1##*.}" = "list" -o "${1##*.}" = "sources" ] && cat -n "$1"' _ '{}' \;
+find /etc/apt -type f -regex ".*\(list\|sources\).*" -exec bash -c 'echo -e "\n\033[1;33m=== $1 ===\033[0m\n" ; [ "${1##*.}" = "list" -o "${1##*.}" = "sources" ] && cat -n "$1"' _ '{}' \;
 ```
 _____________________________________________________________________________
 # CHROOT
