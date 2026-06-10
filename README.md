@@ -63,8 +63,11 @@ grub-list
 ```
 ### Full info grub
 ```bash
-
 sudo awk '/submenu /{s=1;si=0;depth=1;match($0,/["\x27][^"'\'']+["\x27]/);printf "%d : %s\n",ti++,substr($0,RSTART+1,RLENGTH-2);next} s{for(i=1;i<=length($0);i++){c=substr($0,i,1);if(c=="{")depth++;if(c=="}")depth--;if(depth==0){s=0;break}}} /menuentry /{match($0,/["\x27][^"'\'']+["\x27]/);name=substr($0,RSTART+1,RLENGTH-2);if(name!=""){if(s){printf "\t> %d : %s\n",si++,name}else{printf "%d : %s\n",ti++,name}}}' /boot/grub/grub.cfg && cat /etc/default/grub | grep -v "#" && echo '' && cat /etc/grub.d/40_custom | grep -v "#"
+```
+### OU
+```bash
+echo '=== MENU GRUB ===' && sudo awk '/submenu /{s=1;si=0;depth=1;match($0,/["\x27][^"'\'']+["\x27]/);printf "%d : %s\n",ti++,substr($0,RSTART+1,RLENGTH-2);next} s{for(i=1;i<=length($0);i++){c=substr($0,i,1);if(c=="{")depth++;if(c=="}")depth--;if(depth==0){s=0;break}}} /menuentry /{match($0,/["\x27][^"'\'']+["\x27]/);name=substr($0,RSTART+1,RLENGTH-2);if(name!=""){if(s){printf "\t> %d : %s\n",si++,name}else{printf "%d : %s\n",ti++,name}}}' /boot/grub/grub.cfg && echo '' && echo '=== PARTITIONS ===' && sudo blkid | grep -v loop | awk '{printf "%d : %s\n",NR-1,$0}' && echo '' && echo '=== UUID GRUB ===' && sudo awk '/search --no-floppy --fs-uuid --set=root [^-]/{print NR-1" :",$0}' /boot/grub/grub.cfg | sort -u | awk '{printf "%d : %s\n",NR-1,$0}' && echo '' && echo '=== /etc/default/grub ===' && grep -v "^#" /etc/default/grub && echo '' && echo '=== /etc/grub.d/40_custom ===' && grep -v "^#" /etc/grub.d/40_custom
 ```
 _____________________________________________________________________________
 # Test GRUB
