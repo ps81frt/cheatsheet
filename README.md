@@ -115,3 +115,8 @@ _____________________________________________________________________________
 echo "";echo "====/dev/disk/by-uuid/===="; sudo ls -la /dev/disk/by-uuid/* ;echo ""; echo "====blkid -s UUID====";sudo blkid -s UUID ;echo ""; echo "====FSTAB====";cat /etc/fstab | grep -v "^#" ;echo""; echo "====DM-UUID===="; ls -la /dev/disk/by-id/ | grep dm-uuid ;echo ""; echo "====DM-UUID=UUID===="; for dev in /dev/disk/by-id/dm-uuid-* ; do [ -e "$dev" ] || continue; name=$(basename $dev); target=$(readlink -f $dev 2>/dev/null); uuid=$(lsblk -no UUID $target 2>/dev/null); echo "$name = $uuid"; done ;echo "";echo "====FINDMNT====";sudo findmnt / -o SOURCE;echo ""; echo "====df -hT===="; /bin/df -hT | grep -E "ext4|vfat|xfs|btrfs";echo "";echo "====LSBLK===="; lsblk -fe7
 ```
 
+# MEMOIRE
+
+```bash
+watch -n 0.5 "awk '/MemTotal|MemFree|MemAvailable|Buffers|Cached/ {printf \"%-20s %6.1f Go\n\", \$1, \$2/1024/1024}' /proc/meminfo"
+```
