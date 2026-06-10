@@ -32,6 +32,11 @@ cls && find /etc/apt -type f -regex ".*\(list\|sources\).*" -exec bash -c 'echo 
 ```bash
 cls && find /etc/apt -type f \( -name "*.list" -o -name "*.sources" -o -name "*.orig" -o -name "*.bak" \) -exec bash -c 'echo -e "\n\033[1;33m=== $1 ===\033[0m\n" ; cat -n "$1"' _ '{}' \; && echo -e "\n\033[1;33m=== GPG KEYS (if exists) /etc/apt/trusted.gpg.d ===\033[0m\n" && ls -la /etc/apt/trusted.gpg.d/ 2>/dev/null && echo -e "\n\033[1;33m=== GPG KEYS (if exists) /usr/share/keyrings ===\033[0m\n" && ls -la /usr/share/keyrings/ 2>/dev/null && echo -e "\n\033[1;33m=== FINGERPRINTS trusted.gpg.d ===\033[0m\n" && for f in /etc/apt/trusted.gpg.d/*.gpg; do [ -e "$f" ] && echo "--- $f ---" && gpg --no-default-keyring --keyring "$f" --list-keys 2>/dev/null; done && echo -e "\n\033[1;33m=== FINGERPRINTS keyrings ===\033[0m\n" && for f in /usr/share/keyrings/*.gpg; do [ -e "$f" ] && echo "--- $f ---" && gpg --no-default-keyring --keyring "$f" --list-keys 2>/dev/null; done
 ```
+# Sourcelist-full plus orig filtré sans les commenté
+
+```bash
+cls && find /etc/apt -type f -regex ".*\(list\|sources\).*" -exec bash -c 'echo -e "\n\033[1;33m=== $1 ===\033[0m\n" ; [ -s "$1" ] && grep -v "^[[:space:]]*#" "$1" | cat -n' _ '{}' \; && echo -e "\n\033[1;33m=== GPG KEYS /etc/apt/trusted.gpg.d ===\033[0m\n" && ls -la /etc/apt/trusted.gpg.d/ && echo -e "\n\033[1;33m=== GPG KEYS /usr/share/keyrings ===\033[0m\n" && ls -la /usr/share/keyrings/ && echo -e "\n\033[1;33m=== FINGERPRINTS trusted.gpg.d ===\033[0m\n" && for f in /etc/apt/trusted.gpg.d/*.gpg; do echo "--- $f ---"; gpg --no-default-keyring --keyring "$f" --list-keys 2>/dev/null; done && echo -e "\n\033[1;33m=== FINGERPRINTS keyrings ===\033[0m\n" && for f in /usr/share/keyrings/*.gpg; do echo "--- $f ---"; gpg --no-default-keyring --keyring "$f" --list-keys 2>/dev/null; done
+```
 _____________________________________________________________________________
 # CHROOT
 
