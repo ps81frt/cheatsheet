@@ -61,7 +61,11 @@ sudo chmod +x /usr/local/bin/grub-list
 ```bash
 grub-list
 ```
+### Full info grub
+```bash
 
+sudo awk '/submenu /{s=1;si=0;depth=1;match($0,/["\x27][^"'\'']+["\x27]/);printf "%d : %s\n",ti++,substr($0,RSTART+1,RLENGTH-2);next} s{for(i=1;i<=length($0);i++){c=substr($0,i,1);if(c=="{")depth++;if(c=="}")depth--;if(depth==0){s=0;break}}} /menuentry /{match($0,/["\x27][^"'\'']+["\x27]/);name=substr($0,RSTART+1,RLENGTH-2);if(name!=""){if(s){printf "\t> %d : %s\n",si++,name}else{printf "%d : %s\n",ti++,name}}}' /boot/grub/grub.cfg && cat /etc/default/grub | grep -v "#" && echo '' && cat /etc/grub.d/40_custom | grep -v "#"
+```
 _____________________________________________________________________________
 # Test GRUB
 
