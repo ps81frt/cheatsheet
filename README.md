@@ -118,4 +118,5 @@ echo "";echo "====/dev/disk/by-uuid/===="; sudo ls -la /dev/disk/by-uuid/* ;echo
 # MEMOIRE
 
 ```bash
-watch -n 0.5 "awk '/MemTotal|MemFree|MemAvailable|Buffers|Cached/ {val=\$2/1024; if(val>=1024) printf \"%-20s %6.1f Go\n\", \$1, val/1024; else printf \"%-20s %6.1f Mo\n\", \$1, val}' /proc/meminfo"```
+watch -n 0.5 "awk '/MemTotal|MemFree|MemAvailable|Buffers|Cached/ {val=\$2/1024; if(val>=1024) printf \"%-20s %6.1f Go\n\", \$1, val/1024; else printf \"%-20s %6.1f Mo\n\", \$1, val}' /proc/meminfo"
+```
