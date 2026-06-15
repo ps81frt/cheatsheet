@@ -90,59 +90,7 @@ cls && echo '=== LSBLK ===' && lsblk -fe7 && echo '' && echo '=== MENU GRUB ==='
 
 ### Compare /etc/default/grub et /boot/grub/grub.cfg
 ```bash
-sudo awk '
-FNR==NR && /^[[:space:]]*set / {
-  sub(/^[[:space:]]*set /, "")
-  split($0, a, "=")
-  val = substr($0, index($0,"=")+1)
-  gsub(/"/, "", val)
-  gsub(/'"'"'/, "", val)
-  vars[a[1]] = val
-}
-FNR==NR && /^[[:space:]]*linux / && !cmdline {
-  sub(/^[[:space:]]*linux[[:space:]]+[^[:space:]]+[[:space:]]+/, "")
-  cmdline = $0
-}
-FNR!=NR && FNR==1 { has_default=1 }
-FNR!=NR && /^[[:space:]]*#/ { next }
-FNR!=NR && /=/ {
-  gsub(/"/, "")
-  split($0, a, "=")
-  def[a[1]] = substr($0, index($0,"=")+1)
-}
-END {
-  map["default"]              = "GRUB_DEFAULT"
-  map["timeout"]              = "GRUB_TIMEOUT"
-  map["timeout_style"]        = "GRUB_TIMEOUT_STYLE"
-  map["gfxmode"]              = "GRUB_GFXMODE"
-  map["linux_gfx_mode"]       = "GRUB_GFXPAYLOAD_LINUX"
-  map["lang"]                 = "GRUB_LANG"
-  map["theme"]                = "GRUB_THEME"
-  map["menu_color_normal"]    = "GRUB_COLOR_NORMAL"
-  map["menu_color_highlight"] = "GRUB_COLOR_HIGHLIGHT"
-  rootpath = "/boot"
-  for (v in map) {
-    val = vars[v]
-    gsub(/\([^)]*\)/, rootpath, val)
-    gsub(/\$root/, rootpath, val)
-    if (val != "") cfg[map[v]] = val
-  }
-  if (cmdline != "") cfg["GRUB_CMDLINE_LINUX_DEFAULT"] = cmdline
-  if (!has_default) {
-    print "WARNING: /etc/default/grub absent - affichage cfg seulement"
-    for (k in cfg) print k "=" cfg[k]
-  } else {
-    for (k in cfg)
-      if (!(k in def))
-        print "> ONLY_IN_CFG: " k "=" cfg[k]
-    for (k in def)
-      if (!(k in cfg))
-        print "< ONLY_IN_DEFAULT: " k "=" def[k]
-    for (k in cfg)
-      if (k in def && cfg[k] != def[k])
-        print "! DIFFER: " k " CFG=" cfg[k] " DEFAULT=" def[k]
-  }
-}' /boot/grub/grub.cfg $([ -f /etc/default/grub ] && echo "/etc/default/grub" || echo "/dev/null")
+sudo awk 'FNR==NR&&/^[[:space:]]*set /{sub(/^[[:space:]]*set /,"");split($0,a,"=");val=substr($0,index($0,"=")+1);gsub(/"/,"",val);gsub(/'"'"'/,"",val);vars[a[1]]=val}FNR==NR&&/^[[:space:]]*linux /&&!cmdline{sub(/^[[:space:]]*linux[[:space:]]+[^[:space:]]+[[:space:]]+/,"");cmdline=$0}FNR!=NR&&FNR==1{has_default=1}FNR!=NR&&/^[[:space:]]*#/{next}FNR!=NR&&/=/{gsub(/"/,"");split($0,a,"=");def[a[1]]=substr($0,index($0,"=")+1)}END{map["default"]="GRUB_DEFAULT";map["timeout"]="GRUB_TIMEOUT";map["timeout_style"]="GRUB_TIMEOUT_STYLE";map["gfxmode"]="GRUB_GFXMODE";map["linux_gfx_mode"]="GRUB_GFXPAYLOAD_LINUX";map["lang"]="GRUB_LANG";map["theme"]="GRUB_THEME";map["menu_color_normal"]="GRUB_COLOR_NORMAL";map["menu_color_highlight"]="GRUB_COLOR_HIGHLIGHT";rootpath="/boot";for(v in map){val=vars[v];gsub(/\([^)]*\)/,rootpath,val);gsub(/\$root/,rootpath,val);if(val!="")cfg[map[v]]=val};if(cmdline!="")cfg["GRUB_CMDLINE_LINUX_DEFAULT"]=cmdline;if(!has_default){print "WARNING: /etc/default/grub absent";for(k in cfg)print k"="cfg[k]}else{for(k in cfg)if(!(k in def))print "> ONLY_IN_CFG: "k"="cfg[k];for(k in def)if(!(k in cfg))print "< ONLY_IN_DEFAULT: "k"="def[k];for(k in cfg)if(k in def&&cfg[k]!=def[k])print "! DIFFER: "k" CFG="cfg[k]" DEFAULT="def[k]}}' /boot/grub/grub.cfg $([ -f /etc/default/grub ]&&echo /etc/default/grub||echo /dev/null)
 ```
 
 
